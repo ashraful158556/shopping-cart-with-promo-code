@@ -19,22 +19,12 @@
         <section id="cart-section">
             <h2>Cart</h2>
             <div id="cart-items"></div>
-            
-            <!-- Subtotal -->
             <p>Subtotal: $<span id="cart-subtotal">0.00</span></p>
-            
-            <!-- Discount Amount -->
-            <p>Discount: $<span id="discount-amount">0.00</span></p>
-            
-            <!-- Final Total -->
-            <p>Final Total: $<span id="final-total">0.00</span></p>
-            
-            <!-- Promo Code Section -->
-            <div id="promo-code-section">
-                <input type="text" id="promo-code" placeholder="Enter promo code" />
-                <button onclick="applyPromoCode()">Apply Promo Code</button>
-            </div>
-
+            <p>Discount: $<span id="cart-discount">0.00</span></p>
+            <p>Total: $<span id="cart-total">0.00</span></p>
+            <input type="text" id="promo-code" placeholder="Enter promo code">
+            <button id="apply-promo">Apply Promo Code</button>
+            <p id="promo-message"></p>
             <button id="clear-cart">Clear Cart</button>
             <button id="checkout">Checkout</button>
         </section>
