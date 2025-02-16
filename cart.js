@@ -1,5 +1,5 @@
 let cart = [];
-let discount = 0;  // Discount percentage
+let usedPromoCode = false;
 
 function addToCart(productId) {
     const product = products.find(p => p.id === productId);
@@ -15,92 +15,82 @@ function addToCart(productId) {
 
 function updateCart() {
     const cartItems = document.getElementById("cart-items");
+    const cartSubtotal = document.getElementById("cart-subtotal");
+    const cartDiscount = document.getElementById("cart-discount");
+    const cartTotal = document.getElementById("cart-total");
     const cartCount = document.getElementById("cart-count");
-    const subtotal = document.getElementById("cart-subtotal");
-    const discountAmount = document.getElementById("discount-amount");
-    const finalTotal = document.getElementById("final-total");
 
     cartItems.innerHTML = "";
-    let total = 0;
+    let subtotal = 0;
+    let discount = 0;
     let count = 0;
 
     cart.forEach(item => {
-        total += item.price * item.quantity;
+        subtotal += item.price * item.quantity;
         count += item.quantity;
 
         const itemElement = document.createElement("div");
-        itemElement.classList.add("cart-item");
-
         itemElement.innerHTML = `
-            <div>
-                <img src="${item.image}" alt="${item.name}" width="50">
-                <p>${item.name}</p>
-            </div>
-            <div>
-                <button class="quantity-btn" onclick="changeQuantity(${item.id}, -1)">-</button>
-                <input type="number" value="${item.quantity}" min="1" class="quantity-input" onchange="updateItemQuantity(${item.id}, this.value)">
-                <button class="quantity-btn" onclick="changeQuantity(${item.id}, 1)">+</button>
-            </div>
-            <p>$${(item.price * item.quantity).toFixed(2)}</p>
-            <button onclick="removeItem(${item.id})">Remove</button>
+            <p>${item.name} x <input type="number" value="${item.quantity}" min="1" onchange="changeQuantity(${item.id}, this.value)"> - $${(item.price * item.quantity).toFixed(2)}</p>
         `;
         cartItems.appendChild(itemElement);
     });
 
-    // Calculate Subtotal, Discount, and Final Total
-    const subtotalAmount = total;
-    const discountAmountValue = (total * (discount / 100));
-    const finalTotalAmount = subtotalAmount - discountAmountValue;
+    // Calculate discount and total
+    discount = calculateDiscount(subtotal);
+    const total = subtotal - discount;
 
-    subtotal.textContent = `$${subtotalAmount.toFixed(2)}`;
-    discountAmount.textContent = `$${discountAmountValue.toFixed(2)}`;
-    finalTotal.textContent = `$${finalTotalAmount.toFixed(2)}`;
-    
+    cartSubtotal.textContent = subtotal.toFixed(2);
+    cartDiscount.textContent = discount.toFixed(2);
+    cartTotal.textContent = total.toFixed(2);
     cartCount.textContent = count;
 }
 
-function changeQuantity(productId, change) {
-    const cartItem = cart.find(item => item.id === productId);
-    if (cartItem) {
-        cartItem.quantity += change;
-        if (cartItem.quantity <= 0) {
-            cartItem.quantity = 1; // Prevent negative quantity
-        }
+function changeQuantity(productId, newQuantity) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        item.quantity = Math.max(1, newQuantity); // Prevent quantity from being less than 1
         updateCart();
     }
 }
 
-function updateItemQuantity(productId, quantity) {
-    const cartItem = cart.find(item => item.id === productId);
-    if (cartItem && quantity > 0) {
-        cartItem.quantity = parseInt(quantity);
-        updateCart();
+function calculateDiscount(subtotal) {
+    const promoCode = document.getElementById("promo-code").value;
+    let discount = 0;
+
+    if (promoCode === "ostad10" && !usedPromoCode) {
+        discount = subtotal * 0.10;
+        usedPromoCode = true;
+        displayPromoMessage("Promo Code Applied: 10% Discount", true);
+    } else if (promoCode === "ostad5" && !usedPromoCode) {
+        discount = subtotal * 0.05;
+        usedPromoCode = true;
+        displayPromoMessage("Promo Code Applied: 5% Discount", true);
+    } else if (promoCode !== "" && !usedPromoCode) {
+        displayPromoMessage("Invalid Promo Code", false);
     }
+    
+    return discount;
 }
 
-function removeItem(productId) {
-    cart = cart.filter(item => item.id !== productId);
-    updateCart();
-}
-
-function applyPromoCode() {
-    const promoCode = document.getElementById("promo-code").value.trim().toLowerCase();
-    const validPromoCodes = {
-        "ostad10": 10,
-        "ostad5": 5
-    };
-
-    if (validPromoCodes[promoCode]) {
-        discount = validPromoCodes[promoCode];
-        alert(`Promo code applied! You get a ${discount}% discount.`);
-    } else {
-        discount = 0;
-        alert("Invalid promo code.");
-    }
-    updateCart();
+function displayPromoMessage(message, isSuccess) {
+    const promoMessage = document.getElementById("promo-message");
+    promoMessage.textContent = message;
+    promoMessage.style.color = isSuccess ? 'green' : 'red';
 }
 
 document.getElementById("clear-cart").addEventListener("click", () => {
     cart = [];
+    usedPromoCode = false;
     updateCart();
+    document.getElementById("promo-code").value = "";
+    document.getElementById("promo-message").textContent = "";
+});
+
+document.getElementById("apply-promo").addEventListener("click", () => {
+    updateCart();
+});
+
+document.getElementById("checkout").addEventListener("click", () => {
+    alert("Checkout successful!");
 });
