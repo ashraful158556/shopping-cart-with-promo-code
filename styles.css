@@ -114,7 +114,7 @@ button {
     border-radius: 5px;
 }
 
-#clear-cart, #checkout {
+#clear-cart, #checkout, #apply-promo {
     background-color: #ff3300;
     color: white;
     border: none;
@@ -138,44 +138,13 @@ button {
     background-color: darkgreen;
 }
 
-/* Cart Summary Section */
-#cart-section p {
-    font-size: 18px;
-    font-weight: bold;
-    margin: 10px 0;
+#apply-promo:hover {
+    background-color: #cc0000;
 }
 
-#cart-section span {
-    font-size: 18px;
-    font-weight: normal;
-}
-
-/* Promo Code Section */
-#promo-code-section {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#promo-code {
-    padding: 10px;
-    font-size: 16px;
-    width: 70%;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-}
-
-#promo-code-section button {
-    background-color: #ff3300;
-    color: white;
-    padding: 10px;
-    width: 25%;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-#promo-code-section button:hover {
-    background-color: darkred;
+input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    margin-left: 10px;
+    text-align: center;
 }
